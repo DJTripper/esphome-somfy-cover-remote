@@ -1,5 +1,6 @@
 #pragma once
 
+#include "esphome/core/automation.h"
 #include "esphome/core/component.h"
 #include "esphome/components/time_based/time_based_cover.h"
 #include "esphome/components/button/button.h"
