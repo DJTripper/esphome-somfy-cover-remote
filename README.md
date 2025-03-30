@@ -111,7 +111,7 @@ Connect the following CC1101 pints to these GPIO pins:
 - MOSI_PIN 12
 - SS_PIN 15
 - GDO2 4
-- vcc 3.3v
+- VCC 3.3v
 - GND GND
 
 ## Pair the cover
