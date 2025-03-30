@@ -10,8 +10,8 @@ esphome:
   name: somfycontroller
 
 external_components:
-  - source: github://HarmEllis/esphome-somfy-cover-remote.git
-    components: [somfy_cover]
+  - source: github://HarmEllis/esphome-somfy-cover-remote@main
+    components: [ somfy_cover ]
 
 esp32:
   board: esp32dev
