@@ -6,12 +6,15 @@ namespace somfy_cover {
 
 static const char *TAG = "somfy_cover.cover";
 
+// Default value
+bool cc1101I_initialized = false;
+
 void SomfyCover::setup() {
   // Setup the cc1101 module
   setupCC1101();
 
   // Setup cover rolling code storage
-  this->storage = new NVSRollingCodeStorage(NVS_ROLLING_CODE_STORAGE, this->get_object_id());
+  this->storage = new NVSRollingCodeStorage(NVS_ROLLING_CODE_STORAGE, this->get_object_id().c_str());
 
   // Setup the Somfy Remote
   this->remote = new SomfyRemote(EMITTER_GPIO, this->cover_remote_code_, this->storage);

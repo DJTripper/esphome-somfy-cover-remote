@@ -3,6 +3,10 @@ from esphome.components import button, cover
 import esphome.config_validation as cv
 from esphome.const import CONF_CLOSE_DURATION, CONF_ID, CONF_OPEN_DURATION
 
+CODEOWNERS = ["@HarmEllis"]
+
+AUTO_LOAD = ["time_based", "button"]
+
 somfy_cover_ns = cg.esphome_ns.namespace("somfy_cover")
 SomfyCover = somfy_cover_ns.class_("SomfyCover", cover.Cover, cg.Component)
 

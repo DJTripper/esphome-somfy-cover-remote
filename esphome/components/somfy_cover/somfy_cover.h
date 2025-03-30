@@ -27,7 +27,21 @@
 namespace esphome {
 namespace somfy_cover {
 
-class SomfyCover : public time_based::TimeBasedCover, public Component {
+// Helper class to attach cover functions to the time based cover triggers
+template<typename... Ts> class SomfyCoverAction : public Action<Ts...> {
+ public:
+  // The function to be called when the action plays.
+  std::function<void(Ts...)> callback;
+
+  explicit SomfyCoverAction(std::function<void(Ts...)> callback) : callback(callback) {}
+
+  void play(Ts... x) override {
+    if (callback)
+      callback(x...);
+  }
+};
+
+class SomfyCover : public time_based::TimeBasedCover {
  public:
   void setup() override;
   void loop() override;
@@ -47,7 +61,7 @@ class SomfyCover : public time_based::TimeBasedCover, public Component {
   void control(const cover::CoverCall &call) override;
 
   // Set via the ESPHome yaml
-  button::Button *cover_prog_button_{nullprt};
+  button::Button *cover_prog_button_{nullptr};
   uint32_t cover_remote_code_{0};
 
   // Set via the constructor
@@ -69,26 +83,10 @@ class SomfyCover : public time_based::TimeBasedCover, public Component {
 
   void sendCC1101Command(Command command);
 
-  static bool cc1101I_initialized;
   static void setupCC1101();
 };
 
-// Default to false
-bool SomfyCover::cc1101I_initialized = false;
-
-// Helper class to attach cover functions to the time based cover triggers
-template<typename... Ts> class SomfyCoverAction : public Action<Ts...> {
- public:
-  // The function to be called when the action plays.
-  std::function<void(Ts...)> callback;
-
-  explicit SomfyCoverAction(std::function<void(Ts...)> callback) : callback(callback) {}
-
-  void play(Ts... x) override {
-    if (callback)
-      callback(x...);
-  }
-};
+extern bool cc1101I_initialized;
 
 }  // namespace somfy_cover
 }  // namespace esphome
