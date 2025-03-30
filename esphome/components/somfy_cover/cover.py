@@ -5,7 +5,7 @@ from esphome.const import CONF_CLOSE_DURATION, CONF_ID, CONF_OPEN_DURATION
 
 CODEOWNERS = ["@HarmEllis"]
 
-AUTO_LOAD = ["time_based", "button"]
+AUTO_LOAD = ["button", "time_based"]
 
 somfy_cover_ns = cg.esphome_ns.namespace("somfy_cover")
 SomfyCover = somfy_cover_ns.class_("SomfyCover", cover.Cover, cg.Component)
