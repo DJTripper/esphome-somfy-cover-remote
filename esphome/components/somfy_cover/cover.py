@@ -16,7 +16,7 @@ CONF_REMOTE_CODE = "cover_remote_code"
 CONFIG_SCHEMA = cover.COVER_SCHEMA.extend(
     {
         cv.GenerateID(): cv.declare_id(SomfyCover),
-        cv.Required(CONF_PROG_BUTTON): button.button_schema(class_=button.Button),
+        cv.Required(CONF_PROG_BUTTON): cv.use_id(button.Button),
         cv.Required(CONF_OPEN_DURATION): cv.positive_time_period_milliseconds,
         cv.Required(CONF_CLOSE_DURATION): cv.positive_time_period_milliseconds,
         cv.Required(CONF_REMOTE_CODE): cv.uint32_t,
@@ -29,7 +29,7 @@ async def to_code(config):
     await cg.register_component(var, config)
     await cover.register_cover(var, config)
 
-    btn = await button.new_button(config[CONF_PROG_BUTTON])
+    btn = await cg.get_variable(config[CONF_PROG_BUTTON])
     cg.add(var.set_prog_button(btn))
 
     cg.add(var.set_open_duration(config[CONF_OPEN_DURATION]))
