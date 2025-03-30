@@ -94,3 +94,15 @@ cover:
     cover_prog_button: "program_bathroom"
 
 ```
+
+## Generate remote code 
+The remote code is a three byte hex code.
+For example, use the website: https://www.browserling.com/tools/random-hex
+Set to 6 digits and add `0x` in front of the generated hex number.
+
+## CC1101 module connection
+- EMITTER_GPIO 2
+- SCK_PIN 14
+- MISO_PIN 39
+- MOSI_PIN 12
+- SS_PIN 15
