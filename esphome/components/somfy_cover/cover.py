@@ -7,6 +7,8 @@ CODEOWNERS = ["@HarmEllis"]
 
 AUTO_LOAD = ["button", "time_based"]
 
+DEPENDENCIES = ["esp32"]
+
 somfy_cover_ns = cg.esphome_ns.namespace("somfy_cover")
 SomfyCover = somfy_cover_ns.class_("SomfyCover", cover.Cover, cg.Component)
 
