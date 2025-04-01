@@ -1,7 +1,14 @@
 import esphome.codegen as cg
 from esphome.components import button, cover
 import esphome.config_validation as cv
-from esphome.const import CONF_CLOSE_DURATION, CONF_ID, CONF_OPEN_DURATION
+from esphome.const import (
+    CONF_CLOSE_DURATION,
+    CONF_ID,
+    CONF_OPEN_DURATION,
+    PLATFORM_ESP32,
+    PLATFORM_ESP8266,
+    PLATFORM_RP2040,
+)
 
 CODEOWNERS = ["@HarmEllis"]
 
@@ -15,15 +22,19 @@ SomfyCover = somfy_cover_ns.class_("SomfyCover", cover.Cover, cg.Component)
 CONF_PROG_BUTTON = "cover_prog_button"
 CONF_REMOTE_CODE = "cover_remote_code"
 
-CONFIG_SCHEMA = cover.COVER_SCHEMA.extend(
-    {
-        cv.GenerateID(): cv.declare_id(SomfyCover),
-        cv.Required(CONF_PROG_BUTTON): cv.use_id(button.Button),
-        cv.Required(CONF_OPEN_DURATION): cv.positive_time_period_milliseconds,
-        cv.Required(CONF_CLOSE_DURATION): cv.positive_time_period_milliseconds,
-        cv.Required(CONF_REMOTE_CODE): cv.uint32_t,
-    }
-).extend(cv.COMPONENT_SCHEMA)
+CONFIG_SCHEMA = cv.All(
+    cover.COVER_SCHEMA.extend(
+        {
+            cv.GenerateID(): cv.declare_id(SomfyCover),
+            cv.Required(CONF_PROG_BUTTON): cv.use_id(button.Button),
+            cv.Required(CONF_OPEN_DURATION): cv.positive_time_period_milliseconds,
+            cv.Required(CONF_CLOSE_DURATION): cv.positive_time_period_milliseconds,
+            cv.Required(CONF_REMOTE_CODE): cv.uint32_t,
+        }
+    ).extend(cv.COMPONENT_SCHEMA),
+    cv.only_on([PLATFORM_ESP32, PLATFORM_ESP8266, PLATFORM_RP2040]),
+    cv.only_with_arduino,
+)
 
 
 async def to_code(config):

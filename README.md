@@ -11,11 +11,6 @@ Use the following ESPHome yaml as a base for your Somfy controller. Add one ore 
 ```
 esphome:
   name: somfycontroller
-  libraries:
-    - SPI
-    - EEPROM
-    - SmartRC-CC1101-Driver-Lib
-    - Somfy_Remote_Lib
 
 external_components:
   - source: github://HarmEllis/esphome-somfy-cover-remote@main
