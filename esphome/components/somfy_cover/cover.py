@@ -39,6 +39,10 @@ CONFIG_SCHEMA = cv.All(
 
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
+    cg.add_library("SPI", None)
+    cg.add_library("EEPROM", None)
+    cg.add_library("SmartRC-CC1101-Driver-Lib", None)
+    cg.add_library("Somfy_Remote_Lib", None)
     await cg.register_component(var, config)
     await cover.register_cover(var, config)
 
