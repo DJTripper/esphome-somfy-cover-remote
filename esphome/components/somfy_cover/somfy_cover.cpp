@@ -14,32 +14,30 @@ void SomfyCover::setup() {
   setupCC1101();
 
   // Setup cover rolling code storage
-  this->storage = new NVSRollingCodeStorage(NVS_ROLLING_CODE_STORAGE, this->get_object_id().c_str());
+  this->storage_ = new NVSRollingCodeStorage(NVS_ROLLING_CODE_STORAGE, this->storage_key_);
 
   // Setup the Somfy Remote
-  this->remote = new SomfyRemote(EMITTER_GPIO, this->cover_remote_code_, this->storage);
+  this->remote_ = new SomfyRemote(EMITTER_GPIO, this->remote_code_, this->storage_);
 
   // Attach to timebased cover controls
   automationTriggerUp_ = new Automation<>(this->get_open_trigger());
-  actionTriggerUp = new SomfyCoverAction<>([=]() { this->open(); });
+  actionTriggerUp = new SomfyCoverAction<>([=] { return this->open(); });
   automationTriggerUp_->add_action(actionTriggerUp);
-  this->open_trigger_->set_automation_parent(automationTriggerUp_);
 
   automationTriggerDown_ = new Automation<>(this->get_close_trigger());
-  actionTriggerDown_ = new SomfyCoverAction<>([=]() -> void { this->close(); });
+  actionTriggerDown_ = new SomfyCoverAction<>([=] { return this->close(); });
   automationTriggerDown_->add_action(actionTriggerDown_);
-  this->close_trigger_->set_automation_parent(automationTriggerDown_);
 
   automationTriggerStop_ = new Automation<>(this->get_stop_trigger());
-  actionTriggerStop_ = new SomfyCoverAction<>([=]() -> void { this->stop(); });
+  actionTriggerStop_ = new SomfyCoverAction<>([=] { return this->stop(); });
   automationTriggerStop_->add_action(actionTriggerStop_);
-  this->stop_trigger_->set_automation_parent(automationTriggerStop_);
 
   // Attach the prog button
-  this->cover_prog_button_->add_on_press_callback([=]() { this->program(); });
+  this->cover_prog_button_->add_on_press_callback([=] { return this->program(); });
 
   // Set extra settings
   this->has_built_in_endstop_ = true;
+  this->assumed_state_ = true;
 
   TimeBasedCover::setup();
 }
@@ -49,11 +47,8 @@ void SomfyCover::loop() { TimeBasedCover::loop(); }
 void SomfyCover::dump_config() { ESP_LOGCONFIG(TAG, "Somfy cover"); }
 
 cover::CoverTraits SomfyCover::get_traits() {
-  auto traits = cover::CoverTraits();
-  traits.set_is_assumed_state(true);
-  traits.set_supports_position(true);
+  auto traits = TimeBasedCover::get_traits();
   traits.set_supports_tilt(false);
-  traits.set_supports_stop(true);
 
   return traits;
 }
@@ -91,7 +86,7 @@ void SomfyCover::sendCC1101Command(Command command) {
     ESP_LOGE("cc1101", "Connection Error");
   }
   ELECHOUSE_cc1101.SetTx();
-  remote->sendCommand(command);
+  this->remote_->sendCommand(command);
   ELECHOUSE_cc1101.setSidle();
 }
 

@@ -61,8 +61,9 @@ cover:
     device_class: shutter
     open_duration: 18s
     close_duration: 17s
-    cover_remote_code: 0x6b2a03
-    cover_prog_button: "program_livingroom"
+    remote_code: 0x6b2a03
+    storage_key: "livingroom"
+    prog_button: "program_livingroom"
   
   - platform: somfy_cover
     id: "kitchen"
@@ -70,8 +71,9 @@ cover:
     device_class: shutter
     open_duration: 26s
     close_duration: 25s
-    cover_remote_code: 0x0bf93b
-    cover_prog_button: "program_kitchen"
+    remote_code: 0x0bf93b
+    storage_key: "kitchen"
+    prog_button: "program_kitchen"
   
   - platform: somfy_cover
     id: "study"
@@ -79,8 +81,9 @@ cover:
     device_class: shutter
     open_duration: 18s
     close_duration: 17s
-    cover_remote_code: 0x09a1c3
-    cover_prog_button: "program_study"
+    remote_code: 0x09a1c3
+    storage_key: "study"
+    prog_button: "program_study"
 
   - platform: somfy_cover
     id: "bathroom"
@@ -88,8 +91,9 @@ cover:
     device_class: shutter
     open_duration: 18s
     close_duration: 17s
-    cover_remote_code: 0x449677
-    cover_prog_button: "program_bathroom"
+    remote_code: 0x449677
+    storage_key: "bathroom"
+    prog_button: "program_bathroom"
 
 ```
 
@@ -111,6 +115,9 @@ Connect the following CC1101 pints to these GPIO pins:
 
 ## Pair the cover
 Put your cover in program mode with another remote, then use the `Program x` button to pair with the ESP. From then on the cover should respond to the ESPHome Somfy controller.
+
+## Notes
+To solve an issue with the cover not stopping on the set position, I added an extra config option to set the storage key. Because of this change the cover must be paired again. You can unpair before updating the ESP to be able to pair again with the same remote code, otherwise it will be nessecary to change the remote code to be able to pair again.
 
 ## Credits
 I originally used the ESPHome custom component from [evgeni](https://github.com/evgeni/esphome-configs/) after I found his article [Controlling Somfy roller shutters using an ESP32 and ESPHome](https://www.die-welt.net/2021/06/controlling-somfy-roller-shutters-using-an-esp32-and-esphome/).
