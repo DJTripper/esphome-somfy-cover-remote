@@ -4,21 +4,11 @@
 #include "esphome/core/component.h"
 #include "esphome/components/time_based/time_based_cover.h"
 #include "esphome/components/button/button.h"
+#include "esphome/components/cc1101/cc1101.h"
 
-// Libraries for CC1101 module and SomfyRemote
-#include <ELECHOUSE_CC1101_SRC_DRV.h>
+// Libraries for SomfyRemote
 #include <NVSRollingCodeStorage.h>
 #include <SomfyRemote.h>
-
-#define EMITTER_GPIO 2
-
-// Set custom spi pins (byte sck, byte miso, byte mosi, byte ss)
-#define SCK_PIN 14
-#define MISO_PIN 39
-#define MOSI_PIN 12
-#define SS_PIN 15
-
-#define CC1101_FREQUENCY 433.42
 
 #define COVER_OPEN 1.0f
 #define COVER_CLOSED 0.0f
@@ -52,6 +42,9 @@ class SomfyCover : public time_based::TimeBasedCover {
   void set_open_duration(uint32_t open_duration) { this->open_duration_ = open_duration; }
   void set_close_duration(uint32_t close_duration) { this->close_duration_ = close_duration; }
 
+  // Set cc1101 module
+  void set_cc1101_module(cc1101::CC1101 *cc1101_module) { this->cc1101_module_ = cc1101_module; }
+
   // Set somfy cover button and value
   void set_prog_button(button::Button *cover_prog_button) { this->cover_prog_button_ = cover_prog_button; }
   void set_remote_code(uint32_t remote_code_) { this->remote_code_ = remote_code_; }
@@ -63,6 +56,7 @@ class SomfyCover : public time_based::TimeBasedCover {
   void control(const cover::CoverCall &call) override;
 
   // Set via the ESPHome yaml
+  cc1101::CC1101 *cc1101_module_{nullptr};
   button::Button *cover_prog_button_{nullptr};
   uint32_t remote_code_{0};
   const char *storage_key_;
@@ -84,9 +78,7 @@ class SomfyCover : public time_based::TimeBasedCover {
   Automation<> *automationTriggerStop_;
   SomfyCoverAction<> *actionTriggerStop_;
 
-  void sendCC1101Command(Command command);
-
-  static void setupCC1101();
+  void send_command(Command command);
 };
 
 extern bool cc1101I_initialized;
