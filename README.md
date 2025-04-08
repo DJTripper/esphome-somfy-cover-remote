@@ -13,6 +13,8 @@ esphome:
   name: somfycontroller
 
 external_components:
+  - source: github://HarmEllis/esphome-cc1101@main
+    components: [ cc1101 ]
   - source: github://HarmEllis/esphome-somfy-cover-remote@main
     components: [ somfy_cover ]
 
@@ -54,6 +56,16 @@ button:
     id: "program_bathroom"
     name: "Program bathroom"
 
+# For the WT32-ETH01 ESP module, you can use these pins
+cc1101:
+  id: "cc1101_module"
+  cc1101_frequency: 433.42
+  mosi_pin: 12
+  miso_pin: 39
+  clk_pin: 14
+  cs_pin: 15
+  cc1101_emitter_pin: 2
+
 cover:
   - platform: somfy_cover
     id: "livingroom"
@@ -64,6 +76,7 @@ cover:
     remote_code: 0x6b2a03
     storage_key: "livingroom"
     prog_button: "program_livingroom"
+    cc1101_module: "cc1101_module"
   
   - platform: somfy_cover
     id: "kitchen"
@@ -74,6 +87,7 @@ cover:
     remote_code: 0x0bf93b
     storage_key: "kitchen"
     prog_button: "program_kitchen"
+    cc1101_module: "cc1101_module"
   
   - platform: somfy_cover
     id: "study"
@@ -84,6 +98,7 @@ cover:
     remote_code: 0x09a1c3
     storage_key: "study"
     prog_button: "program_study"
+    cc1101_module: "cc1101_module"
 
   - platform: somfy_cover
     id: "bathroom"
@@ -94,6 +109,7 @@ cover:
     remote_code: 0x449677
     storage_key: "bathroom"
     prog_button: "program_bathroom"
+    cc1101_module: "cc1101_module"
 
 ```
 
@@ -102,22 +118,8 @@ The remote code is a three byte hex code.
 For example, use the website: https://www.browserling.com/tools/random-hex  
 Set to 6 digits and add `0x` in front of the generated hex number.
 
-## CC1101 module connection
-Connect the following CC1101 pints to these GPIO pins:
-- EMITTER_GPIO 2
-- SCK_PIN 14
-- MISO_PIN 39
-- MOSI_PIN 12
-- SS_PIN 15
-- GDO2 4
-- VCC 3.3v
-- GND GND
-
 ## Pair the cover
 Put your cover in program mode with another remote, then use the `Program x` button to pair with the ESP. From then on the cover should respond to the ESPHome Somfy controller.
-
-## Notes
-To solve an issue with the cover not stopping on the set position, I added an extra config option to set the storage key. Because of this change the cover must be paired again. You can unpair before updating the ESP to be able to pair again with the same remote code, otherwise it will be nessecary to change the remote code to be able to pair again.
 
 ## Credits
 I originally used the ESPHome custom component from [evgeni](https://github.com/evgeni/esphome-configs/) after I found his article [Controlling Somfy roller shutters using an ESP32 and ESPHome](https://www.die-welt.net/2021/06/controlling-somfy-roller-shutters-using-an-esp32-and-esphome/).
