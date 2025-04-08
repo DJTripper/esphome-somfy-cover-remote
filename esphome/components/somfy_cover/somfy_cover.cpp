@@ -10,14 +10,11 @@ static const char *TAG = "somfy_cover.cover";
 bool cc1101I_initialized = false;
 
 void SomfyCover::setup() {
-  // Setup the cc1101 module
-  setupCC1101();
-
   // Setup cover rolling code storage
   this->storage_ = new NVSRollingCodeStorage(NVS_ROLLING_CODE_STORAGE, this->storage_key_);
 
   // Setup the Somfy Remote
-  this->remote_ = new SomfyRemote(EMITTER_GPIO, this->remote_code_, this->storage_);
+  this->remote_ = new SomfyRemote(this->cc1101_module_->get_emitter_pin(), this->remote_code_, this->storage_);
 
   // Attach to timebased cover controls
   automationTriggerUp_ = new Automation<>(this->get_open_trigger());
@@ -58,67 +55,29 @@ void SomfyCover::control(const cover::CoverCall &call) { TimeBasedCover::control
 void SomfyCover::open() {
   std::string command = "OPEN " + this->get_object_id();
   ESP_LOGI("somfy", command.c_str());
-  this->sendCC1101Command(Command::Up);
+  this->send_command(Command::Up);
 }
 
 void SomfyCover::close() {
   std::string command = "CLOSE " + this->get_object_id();
   ESP_LOGI("somfy", command.c_str());
-  this->sendCC1101Command(Command::Down);
+  this->send_command(Command::Down);
 }
 
 void SomfyCover::stop() {
   std::string command = "STOP " + this->get_object_id();
   ESP_LOGI("somfy", command.c_str());
-  this->sendCC1101Command(Command::My);
+  this->send_command(Command::My);
 }
 
 void SomfyCover::program() {
   std::string command = "PROG " + this->get_object_id();
   ESP_LOGI("somfy", command.c_str());
-  this->sendCC1101Command(Command::Prog);
+  this->send_command(Command::Prog);
 }
 
-void SomfyCover::sendCC1101Command(Command command) {
-  if (ELECHOUSE_cc1101.getCC1101()) {  // Check the CC1101 Spi connection.
-    ESP_LOGI("cc1101", "Connection OK");
-  } else {
-    ESP_LOGE("cc1101", "Connection Error");
-  }
-  ELECHOUSE_cc1101.SetTx();
-  this->remote_->sendCommand(command);
-  ELECHOUSE_cc1101.setSidle();
-}
-
-void SomfyCover::setupCC1101() {
-  // The cc1101 library does not need to be setup more than once
-  if (cc1101I_initialized) {
-    return;
-  }
-
-  // Set EMITTER_GPIO as OUTPUT, otherwise no commands will be sent
-  pinMode(EMITTER_GPIO, OUTPUT);
-  digitalWrite(EMITTER_GPIO, LOW);
-
-  // Setup SCK_PIN, MISO_PIN, MOSI_PIN, SS_PIN
-  pinMode(SCK_PIN, OUTPUT);
-  pinMode(MISO_PIN, INPUT);
-  pinMode(MOSI_PIN, OUTPUT);
-  pinMode(SS_PIN, OUTPUT);
-
-  // Set custom spi pins (byte sck, byte miso, byte mosi, byte ss)
-  ELECHOUSE_cc1101.setSpiPin(SCK_PIN, MISO_PIN, MOSI_PIN, SS_PIN);
-
-  ELECHOUSE_cc1101.Init();
-
-  ELECHOUSE_cc1101.setMHZ(CC1101_FREQUENCY);
-
-  if (ELECHOUSE_cc1101.getCC1101()) {  // Check the CC1101 Spi connection.
-    ESP_LOGI("cc1101", "Connection OK");
-    cc1101I_initialized = true;
-  } else {
-    ESP_LOGE("cc1101", "Connection Error");
-  }
+void SomfyCover::send_command(Command command) {
+  this->cc1101_module_->sent_command([=] { this->remote_->sendCommand(command); });
 }
 
 }  // namespace somfy_cover
