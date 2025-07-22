@@ -15,22 +15,23 @@ void SomfyCover::setup() {
 
   // Setup the Somfy Remote
   this->remote_ = new SomfyRemote(this->cc1101_module_->get_emitter_pin(), this->remote_code_, this->storage_);
+  this->remote_->setup();
 
   // Attach to timebased cover controls
   automationTriggerUp_ = new Automation<>(this->get_open_trigger());
-  actionTriggerUp = new SomfyCoverAction<>([=] { return this->open(); });
+  actionTriggerUp = new SomfyCoverAction<>([=, this] { return this->open(); });
   automationTriggerUp_->add_action(actionTriggerUp);
 
   automationTriggerDown_ = new Automation<>(this->get_close_trigger());
-  actionTriggerDown_ = new SomfyCoverAction<>([=] { return this->close(); });
+  actionTriggerDown_ = new SomfyCoverAction<>([=, this] { return this->close(); });
   automationTriggerDown_->add_action(actionTriggerDown_);
 
   automationTriggerStop_ = new Automation<>(this->get_stop_trigger());
-  actionTriggerStop_ = new SomfyCoverAction<>([=] { return this->stop(); });
+  actionTriggerStop_ = new SomfyCoverAction<>([=, this] { return this->stop(); });
   automationTriggerStop_->add_action(actionTriggerStop_);
 
   // Attach the prog button
-  this->cover_prog_button_->add_on_press_callback([=] { return this->program(); });
+  this->cover_prog_button_->add_on_press_callback([=, this] { return this->program(); });
 
   // Set extra settings
   this->has_built_in_endstop_ = true;
@@ -77,7 +78,7 @@ void SomfyCover::program() {
 }
 
 void SomfyCover::send_command(Command command) {
-  this->cc1101_module_->sent_command([=] { this->remote_->sendCommand(command); });
+  this->cc1101_module_->sent_command([=, this] { this->remote_->sendCommand(command); });
 }
 
 }  // namespace somfy_cover
