@@ -25,7 +25,8 @@ CONF_REMOTE_CODE = "remote_code"
 CONF_SOMFY_STORAGE_KEY = "storage_key"
 
 CONFIG_SCHEMA = cv.All(
-    cover.COVER_SCHEMA.extend(
+    cover.cover_schema(SomfyCover)
+    .extend(
         {
             cv.GenerateID(): cv.declare_id(SomfyCover),
             cv.Required(CONF_PROG_BUTTON): cv.use_id(button.Button),
