@@ -61,7 +61,7 @@ class SomfyCover : public time_based::TimeBasedCover {
   button::Button *cover_prog_button_{nullptr};
   uint32_t remote_code_{0};
   const char *storage_key_;
-  const int repeat_count_{4};  // Number of times to repeat the command
+  int repeat_count_{4};  // Number of times to repeat the command
 
   // Set via the constructor
   SomfyRemote *remote_;
