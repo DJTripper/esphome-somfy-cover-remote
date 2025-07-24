@@ -49,6 +49,7 @@ class SomfyCover : public time_based::TimeBasedCover {
   void set_prog_button(button::Button *cover_prog_button) { this->cover_prog_button_ = cover_prog_button; }
   void set_remote_code(uint32_t remote_code_) { this->remote_code_ = remote_code_; }
   void set_storage_key(const char *storage_key_) { this->storage_key_ = storage_key_; }
+  void set_repeat_count(int repeat_count_) { this->repeat_count_ = repeat_count_; }
 
   cover::CoverTraits get_traits() override;
 
@@ -60,6 +61,7 @@ class SomfyCover : public time_based::TimeBasedCover {
   button::Button *cover_prog_button_{nullptr};
   uint32_t remote_code_{0};
   const char *storage_key_;
+  const int repeat_count_{4};  // Number of times to repeat the command
 
   // Set via the constructor
   SomfyRemote *remote_;

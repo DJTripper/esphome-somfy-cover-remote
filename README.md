@@ -110,6 +110,7 @@ cover:
     storage_key: "bathroom"
     prog_button: "program_bathroom"
     cc1101_module: "cc1101_module"
+    repeat_command_count: 1
 
 ```
 
@@ -119,7 +120,10 @@ For example, use the website: https://www.browserling.com/tools/random-hex
 Set to 6 digits and add `0x` in front of the generated hex number.
 
 ## Pair the cover
-Put your cover in program mode with another remote, then use the `Program x` button to pair with the ESP. From then on the cover should respond to the ESPHome Somfy controller.
+Put your cover in program mode with another remote, then use the `Program x` button to pair with the ESP. From then on the cover should respond to the ESPHome Somfy controller. You can also connect multiple covers by pairing then one by one with the same `Program x` button.
+
+## Repeating command setting
+The *Somfy_Remote_Lib* library defaults to sending a command four times. Some devices do not handle this well and should only reveive the command one time. For these devices the optional parameter `repeat_command_count` can be set in the yaml for the cover.
 
 ## Credits
 I originally used the ESPHome custom component from [evgeni](https://github.com/evgeni/esphome-configs/) after I found his article [Controlling Somfy roller shutters using an ESP32 and ESPHome](https://www.die-welt.net/2021/06/controlling-somfy-roller-shutters-using-an-esp32-and-esphome/).

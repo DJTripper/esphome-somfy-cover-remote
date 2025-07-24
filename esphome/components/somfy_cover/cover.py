@@ -23,6 +23,7 @@ CONF_CC1101_MODULE = "cc1101_module"
 CONF_PROG_BUTTON = "prog_button"
 CONF_REMOTE_CODE = "remote_code"
 CONF_SOMFY_STORAGE_KEY = "storage_key"
+CONF_REPEAT_COMMAND_COUNT = "repeat_command_count"
 
 CONFIG_SCHEMA = cv.All(
     cover.cover_schema(SomfyCover)
@@ -35,6 +36,7 @@ CONFIG_SCHEMA = cv.All(
             cv.Required(CONF_CLOSE_DURATION): cv.positive_time_period_milliseconds,
             cv.Required(CONF_REMOTE_CODE): cv.uint32_t,
             cv.Required(CONF_SOMFY_STORAGE_KEY): cv.All(cv.string, cv.Length(max=15)),
+            cv.Optional(CONF_REPEAT_COMMAND_COUNT, default=4): cv.int_range(min=1, max=100),
         }
     ).extend(cv.COMPONENT_SCHEMA),
     cv.only_on([PLATFORM_ESP32, PLATFORM_ESP8266, PLATFORM_RP2040]),
@@ -62,3 +64,5 @@ async def to_code(config):
     cg.add(var.set_remote_code(config[CONF_REMOTE_CODE]))
 
     cg.add(var.set_storage_key(config[CONF_SOMFY_STORAGE_KEY]))
+
+    cg.add(var.set_repeat_count(config[CONF_REPEAT_COMMAND_COUNT]))

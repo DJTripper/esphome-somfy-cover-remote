@@ -78,7 +78,7 @@ void SomfyCover::program() {
 }
 
 void SomfyCover::send_command(Command command) {
-  this->cc1101_module_->sent_command([=, this] { this->remote_->sendCommand(command); });
+  this->cc1101_module_->sent_command([=, this] { this->remote_->sendCommand(command, this->repeat_count_); });
 }
 
 }  // namespace somfy_cover
