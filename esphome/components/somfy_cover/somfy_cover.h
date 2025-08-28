@@ -13,7 +13,7 @@
 #define COVER_OPEN 1.0f
 #define COVER_CLOSED 0.0f
 
-#define NVS_ROLLING_CODE_STORAGE "somfy_cover"
+#define NVS_ROLLING_CODE_STORAGE "somfy"
 
 namespace esphome {
 namespace somfy_cover {
